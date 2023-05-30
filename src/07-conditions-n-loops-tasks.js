@@ -270,8 +270,23 @@ function reverseInteger(num) {
  *   5436468789016589 => false
  *   4916123456789012 => false
  */
-function isCreditCardNumber(/* ccn */) {
-  throw new Error('Not implemented');
+function isCreditCardNumber(ccn) {
+  const digits = String(ccn).split('').map(Number).reverse();
+
+  let sum = 0;
+  for (let i = 0; i < digits.length; i += 1) {
+    if (i % 2 === 1) {
+      let doubled = digits[i] * 2;
+      if (doubled > 9) {
+        doubled -= 9;
+      }
+      sum += doubled;
+    } else {
+      sum += digits[i];
+    }
+  }
+
+  return sum % 10 === 0;
 }
 
 /**
@@ -288,8 +303,13 @@ function isCreditCardNumber(/* ccn */) {
  *   10000 ( 1+0+0+0+0 = 1 ) => 1
  *   165536 (1+6+5+5+3+6 = 26,  2+6 = 8) => 8
  */
-function getDigitalRoot(/* num */) {
-  throw new Error('Not implemented');
+function getDigitalRoot(num) {
+  const sumOfDigits = num.toString().split('').reduce((acc, value) => acc + +value, 0);
+  if (sumOfDigits > 9) {
+    return getDigitalRoot(sumOfDigits);
+  }
+
+  return sumOfDigits;
 }
 
 
@@ -314,8 +334,38 @@ function getDigitalRoot(/* num */) {
  *   '{)' = false
  *   '{[(<{[]}>)]}' = true
  */
-function isBracketsBalanced(/* str */) {
-  throw new Error('Not implemented');
+function isBracketsBalanced(str) {
+  if (str.length % 2 !== 0) {
+    return false;
+  }
+  const bracketsStack = [];
+  const BRACKETS = {
+    ']': '[',
+    ')': '(',
+    '}': '{',
+    '>': '<',
+  };
+  for (let i = 0; i < str.length; i += 1) {
+    switch (str[i]) {
+      case '[':
+      case '(':
+      case '{':
+      case '<':
+        bracketsStack.push(str[i]);
+        break;
+      case ']':
+      case ')':
+      case '}':
+      case '>':
+        if (bracketsStack.pop(str[i]) !== BRACKETS[str[i]]) {
+          return false;
+        }
+        break;
+      default:
+    }
+  }
+
+  return true;
 }
 
 
@@ -339,8 +389,8 @@ function isBracketsBalanced(/* str */) {
  *    365, 4  => '11231'
  *    365, 10 => '365'
  */
-function toNaryString(/* num, n */) {
-  throw new Error('Not implemented');
+function toNaryString(num, n) {
+  return num.toString(n);
 }
 
 
@@ -356,8 +406,31 @@ function toNaryString(/* num, n */) {
  *   ['/web/assets/style.css', '/.bin/mocha',  '/read.me'] => '/'
  *   ['/web/favicon.ico', '/web-scripts/dump', '/verbalizer/logs'] => '/'
  */
-function getCommonDirectoryPath(/* pathes */) {
-  throw new Error('Not implemented');
+function getCommonDirectoryPath(pathes) {
+  let result = '';
+  const parts = pathes.map((path) => path.split('/'));
+
+  parts[0].forEach((pathPart, index) => {
+    let flag = true;
+    for (let i = 1; i < parts.length; i += 1) {
+      if (pathPart !== parts[i][index]) {
+        flag = false;
+        return result;
+      }
+    }
+
+    if (flag) {
+      if (!index && pathPart === '') {
+        result += '/';
+      } else {
+        result += `${pathPart}/`;
+      }
+    }
+
+    return result;
+  });
+
+  return result;
 }
 
 
@@ -379,8 +452,20 @@ function getCommonDirectoryPath(/* pathes */) {
  *                         [ 6 ]]
  *
  */
-function getMatrixProduct(/* m1, m2 */) {
-  throw new Error('Not implemented');
+function getMatrixProduct(m1, m2) {
+  const result = [];
+  for (let i = 0; i < m1.length; i += 1) {
+    const row = [];
+    for (let j = 0; j < m2[0].length; j += 1) {
+      let sum = 0;
+      for (let k = 0; k < m2.length; k += 1) {
+        sum += m1[i][k] * m2[k][j];
+      }
+      row.push(sum);
+    }
+    result.push(row);
+  }
+  return result;
 }
 
 
@@ -414,8 +499,34 @@ function getMatrixProduct(/* m1, m2 */) {
  *    [    ,   ,    ]]
  *
  */
-function evaluateTicTacToePosition(/* position */) {
-  throw new Error('Not implemented');
+function evaluateTicTacToePosition(position) {
+  let result;
+  position.forEach((row, index) => {
+    if (row.length === 3 && row.every((value) => value === row[0])) {
+      [result] = row;
+    }
+
+    if (!index) {
+      if (row[index] === position[1][index]
+          && row[index] === position[2][index]) {
+        [result] = row;
+      } else if (row[index + 1] === position[1][index + 1]
+          && row[index + 1] === position[2][index + 1]) {
+        result = row[index + 1];
+      } else if (row[index + 2] === position[1][index + 2]
+          && row[index + 2] === position[2][index + 2]) {
+        result = row[index + 2];
+      } else if (row[index] === position[1][1]
+        && row[index] === position[2][2]) {
+        result = row[index];
+      } else if (row[index + 2] === position[1][1]
+        && row[index + 2] === position[2][0]) {
+        result = row[index + 2];
+      }
+    }
+  });
+
+  return result;
 }
 
 
